@@ -8,12 +8,12 @@ final case class EitherR3[F[_[_]], G[_[_]], H[_]](run: Either[F[H], G[H]]){
   def right: Option[G[H]] = run.fold(_ => None, _.some)
 
   def mapR3[N[_[_]]](f: G ~~> N): EitherR3[F, N, H] = 
-    semiFold(EitherR3.leftc(_), gh => EitherR3.rightc(f(gh)))
+    fold(idR3.andThenR3(EitherR3.liftLeft[F, N]), f.andThenR3(EitherR3.liftRight[F, N]))
   def leftmapR3[N[_[_]]](f: F ~~> N): EitherR3[N, G, H] =
-    semiFold(fh => EitherR3.leftc(f(fh)), EitherR3.rightc(_))
+    fold(f.andThenR3(EitherR3.liftLeft[N, G]), idR3.andThenR3(EitherR3.liftRight[N, G]))
   def bimapR3[M[_[_]], N[_[_]]](f: F ~~> M, g: G ~~> N): EitherR3[M,N, H] = 
     fold(f.andThenR3(EitherR3.liftLeft[M, N]), g.andThenR3(EitherR3.liftRight[M,N]))
-    
+
   def semiFold[C](left: F[H] => C, right: G[H] => C): C = run.fold(left(_), right(_))
   def fold[M[_[_]]](left: F ~~> M, right: G ~~> M): M[H] = run.fold(left(_), right(_))
 }
