@@ -7,9 +7,9 @@ final case class EitherR3[F[_[_]], G[_[_]], H[_]](run: Either[F[H], G[H]]){
   def left: Option[F[H]] = run.fold(_.some, _ => None)
   def right: Option[G[H]] = run.fold(_ => None, _.some)
 
-  def map[N[_[_]]](f: G ~~> N): EitherR3[F, N, H] = 
+  def mapR3[N[_[_]]](f: G ~~> N): EitherR3[F, N, H] = 
     semiFold(EitherR3.leftc(_), gh => EitherR3.rightc(f(gh)))
-  def leftmap[N[_[_]]](f: F ~~> N): EitherR3[N, G, H] =
+  def leftMapR3[N[_[_]]](f: F ~~> N): EitherR3[N, G, H] =
     semiFold(fh => EitherR3.leftc(f(fh)), EitherR3.rightc(_))
 
   def semiFold[C](left: F[H] => C, right: G[H] => C): C = run.fold(left(_), right(_))
@@ -24,7 +24,7 @@ object EitherR3 {
     type PartiallyApliedEitherR3[G[_[_]]] = EitherR3[F, G, H]
     new FunctorR3[PartiallyApliedEitherR3]{
       def mapR3[M[_[_]], N[_[_]]](fa: EitherR3[F, M, H])(f: M ~~> N): EitherR3[F, N, H] = 
-        fa.map(f)
+        fa.mapR3(f)
     }
   }
 }

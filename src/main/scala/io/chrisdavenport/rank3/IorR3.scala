@@ -11,6 +11,9 @@ final case class IorR3[F[_[_]], G[_[_]], H[_]](run: Ior[F[H], G[H]]){
   def right: Option[G[H]] = run.fold(_ => None, _.some, (_, r) => r.some)
   def onlyRight: Option[G[H]] = run.fold(_ => None, _.some, (_, _) => None)
 
+  def mapR3[N[_[_]]](f: G ~~> N): IorR3[F, N, H] = IorR3(run.map(f(_)))
+  def leftMapR3[N[_[_]]](f: F ~~> N): IorR3[N, G, H] = IorR3(run.leftMap(f(_)))
+
 
   def semiFold[C](left: F[H] => C, right: G[H] => C, both: (F[H], G[H]) => C): C =
     run.fold(left, right, both)
