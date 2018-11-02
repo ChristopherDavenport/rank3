@@ -53,9 +53,9 @@ object CompileSpec extends mutable.Specification {
     val transform = new ~~>[Tuple2R3[Monad, Tuple2R3[Foo, Bar, ?[_]], ?[_]], Baz]{
       def apply[F[_]](fh: Tuple2R3[Monad, Tuple2R3[Foo, Bar, ?[_]], F]): Baz[F] = new Baz[F] {
         def baz: F[(Int, Int)] = {
-          implicit val M = fh.t._1
-          val foo = fh.t._2.t._1
-          val bar = fh.t._2.t._2
+          implicit val M = fh.fst
+          val foo = fh.snd.fst
+          val bar = fh.snd.snd
           for {
             foo <- foo.foo
             bar <- bar.bar
