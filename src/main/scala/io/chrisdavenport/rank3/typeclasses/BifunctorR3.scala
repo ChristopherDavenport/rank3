@@ -19,3 +19,7 @@ trait BifunctorR3[F[_[_[_]], _[_[_]]]]{
     }
   }
 }
+
+object BifunctorR3 {
+  def apply[F[_[_[_]], _[_[_]]]](implicit ev: BifunctorR3[F]): BifunctorR3[F] = ev
+}
