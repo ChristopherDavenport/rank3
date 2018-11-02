@@ -6,10 +6,10 @@ A set of algebras exposing operations for rank3 transformations. Such that the e
 To this end we currently expose 4 sets of rank3 constructs
 
 ```scala
-trait FunctionR3[F[_[_]], G[_[_]]]{
-  def apply[H[_]](fh: F[H]): G[H]
+trait Function1R3[F[_[_]], G[_[_]]]{
+  def apply[H[_]](a: F[H]): G[H]
 }
-type ~~> = FunctionR3
+type ~~> = Function1R3
 
 EitherR3[F[_[_]], G[_[_]], H[_]] = Either[F[H], G[H]]
 IorR3[F[_[_]], G[_[_]], H[_]] = Ior[F[H], G[H]]
