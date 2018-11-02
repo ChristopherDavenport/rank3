@@ -9,8 +9,10 @@ final case class EitherR3[F[_[_]], G[_[_]], H[_]](run: Either[F[H], G[H]]){
 
   def mapR3[N[_[_]]](f: G ~~> N): EitherR3[F, N, H] = 
     semiFold(EitherR3.leftc(_), gh => EitherR3.rightc(f(gh)))
-  def leftMapR3[N[_[_]]](f: F ~~> N): EitherR3[N, G, H] =
+  def leftmapR3[N[_[_]]](f: F ~~> N): EitherR3[N, G, H] =
     semiFold(fh => EitherR3.leftc(f(fh)), EitherR3.rightc(_))
+  def bimapR3[M[_[_]], N[_[_]]](f: F ~~> M, g: G ~~> N): EitherR3[M,N, H] = 
+    semiFold(fh => EitherR3.leftc(f(fh)), gh => EitherR3.rightc(g(gh)))
 
   def semiFold[C](left: F[H] => C, right: G[H] => C): C = run.fold(left(_), right(_))
   def fold[M[_[_]]](left: F ~~> M, right: G ~~> M): M[H] = run.fold(left(_), right(_))
@@ -25,6 +27,13 @@ object EitherR3 {
     new FunctorR3[PartiallyApliedEitherR3]{
       def mapR3[M[_[_]], N[_[_]]](fa: EitherR3[F, M, H])(f: M ~~> N): EitherR3[F, N, H] = 
         fa.mapR3(f)
+    }
+  }
+  implicit def bifunctorEitherR3[H[_]] = {
+    type EitherR3Partial[F[_[_]], G[_[_]]] = EitherR3[F, G, H]
+    new typeclasses.BifunctorR3[EitherR3Partial]{
+      def bimapR3[M[_[_]], N[_[_]], Y[_[_]], Z[_[_]]](fa: EitherR3Partial[M, N])(f: M ~~> Y, g: N ~~> Z): EitherR3Partial[Y, Z] =
+        fa.bimapR3(f, g)
     }
   }
 }
