@@ -4,6 +4,22 @@ import org.specs2._
 
 object CompileSpec extends mutable.Specification {
 
+  val simple = {
+    import cats._
+    trait Foo[F[_]]{
+      def foo: F[Int]
+    }
+    trait Bar[F[_]]{
+      def bar: F[Int]
+    }
+    val transform = new ~~>[Tuple2R3[Functor, Foo, ?[_]], Bar] {
+      def apply[F[_]](fh: Tuple2R3[Functor, Foo, F]): Bar[F] = new Bar[F]{
+        def bar = fh.fst.map(fh.snd.foo)(_ + 1)
+      }
+    }
+    val _ = transform
+  }
+
   val compileCheckFunctionR3 = {
     trait Foo[F[_]]{
       def foo: F[Int]
