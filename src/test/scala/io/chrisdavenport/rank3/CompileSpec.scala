@@ -14,7 +14,7 @@ object CompileSpec extends mutable.Specification {
     }
     val transform = new ~~>[Tuple2R3[Functor, Foo, ?[_]], Bar] {
       def apply[F[_]](fh: Tuple2R3[Functor, Foo, F]): Bar[F] = new Bar[F]{
-        def bar = fh.fst.map(fh.snd.foo)(_ + 1)
+        def bar = fh._1.map(fh._2.foo)(_ + 1)
       }
     }
     val _ = transform
@@ -69,9 +69,9 @@ object CompileSpec extends mutable.Specification {
     val transform = new ~~>[Tuple2R3[Monad, Tuple2R3[Foo, Bar, ?[_]], ?[_]], Baz]{
       def apply[F[_]](fh: Tuple2R3[Monad, Tuple2R3[Foo, Bar, ?[_]], F]): Baz[F] = new Baz[F] {
         def baz: F[(Int, Int)] = {
-          implicit val M = fh.fst
-          val foo = fh.snd.fst
-          val bar = fh.snd.snd
+          implicit val M = fh._1
+          val foo = fh._2._1
+          val bar = fh._2._2
           for {
             foo <- foo.foo
             bar <- bar.bar
@@ -80,7 +80,7 @@ object CompileSpec extends mutable.Specification {
       }
     }
 
-    val test = Tuple2R3((Monad[Option], Tuple2R3((foo, bar))))
+    val test = Tuple2R3(Monad[Option], Tuple2R3(foo, bar))
     val _ = transform(test)
   }
 

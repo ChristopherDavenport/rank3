@@ -19,7 +19,7 @@ final case class IorR3[F[_[_]], G[_[_]], H[_]](run: Ior[F[H], G[H]]){
     run.fold(
       left(_),
       right(_),
-      (l, r) => both(Tuple2R3[F, G, H]((l, r)))
+      (l, r) => both(Tuple2R3(l, r))
     )
 }
 
