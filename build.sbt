@@ -4,7 +4,7 @@ lazy val core = project.in(file("."))
       name := "rank3"
     )
 
-val catsV = "1.6.0"
+val catsV = "1.6.1"
 
 val specs2V = "4.5.1"
 
