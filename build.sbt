@@ -9,7 +9,7 @@ val catsV = "1.6.1"
 
 val specs2V = "4.7.0"
 
-val kindProjectorV = "0.10.0"
+val kindProjectorV = "0.10.3"
 val betterMonadicForV = "0.3.1"
 
 
