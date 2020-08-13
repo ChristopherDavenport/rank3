@@ -7,7 +7,7 @@ lazy val core = project.in(file("."))
 
 val catsV = "1.6.1"
 
-val specs2V = "4.9.4"
+val specs2V = "4.10.3"
 
 val kindProjectorV = "0.10.3"
 val betterMonadicForV = "0.3.1"
